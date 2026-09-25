@@ -15,17 +15,30 @@ Search a loan app by name against a curated, sourced dataset of ~40 apps with a 
 **3. Terms & conditions scanner** (`/scan`)
 Paste loan terms directly, or give a link (fetched server-side via `/api/scan` to avoid browser CORS limits). The scanner runs real pattern matching against the actual text for three trap categories: late fees/penalties, third-party contact rights (contact list, next of kin, emergency contacts), and rollover/renewal clauses. This works standalone with zero external dependencies; if `ANTHROPIC_API_KEY` is set in the deployment environment, each matched clause additionally gets a one-sentence plain-English explanation from an LLM call, generated only from the matched text (never inventing clauses that aren't there).
 
+The loan-app lookup also does fuzzy matching: a misspelled or partial name still surfaces "did you mean" suggestions and a live autocomplete dropdown, matched against both the delisted-app registry and the FCCPC-approved lender list, so a typo or a legitimate app name never dead-ends into a false "not verified" result.
+
 ## The Iris Ring
 
 The product's signature interaction, tied to the mark's third-eye motif: a thin gold ring breathes at idle, contracts aperture-style through each real check as it runs (the labels only advance once that step's real work has resolved), then locks solid to a risk color. No particles, no glow, no gradient bloom.
 
+## Accounts and admin
+
+Signup/login (`/signup`, `/login`) is optional today, not required to use the three checks. Accounts require the signer to be 18 or older, enforced both client- and server-side. There's no external database: passwords are hashed with scrypt and each user record is stored as its own private JSON file in Vercel Blob, keyed by a hash of their email; sessions are a signed, stateless cookie (HMAC over `AUTH_SECRET`) rather than a session store.
+
+`/admin` is a separate, password-gated dashboard (credentials via `ADMIN_USERNAME`/`ADMIN_PASSWORD` env vars, never committed) showing total accounts, signups in the last 7 days, average age, and the per-user list.
+
+## Pages
+
+`/about`, `/privacy`, `/terms`, `/contact`, a custom 404, `robots.txt`, and `sitemap.xml` round out the app for indexing and for eventual ad-network review — none of them are placeholder text.
+
 ## Stack
 
 - Next.js 16 (App Router) + React 19 + TypeScript
-- Tailwind v4 with a fully custom dark-mode-first design system (see `app/globals.css`) pulled from the mark's own palette: deep teal, olive, gold, warm grey
+- Tailwind v4 with a fully custom design system (see `app/globals.css`) pulled from the mark's own palette: deep teal, olive, gold, warm grey. Dark by default, with a light mode toggle (flash-free via a blocking inline script + `useSyncExternalStore`)
 - No animation library — the ring and all motion are plain CSS/SVG to keep the bundle light on mobile data
 - Installable PWA: `public/manifest.json` + a hand-written service worker (`public/sw.js`) caching the static shell for offline use
 - `@phosphor-icons/react` for icons; `sharp` (dev-only) to derive the icon set from the source mark
+- `@vercel/blob` for the auth data layer (see "Accounts and admin" above) — chosen over a hosted Postgres/Supabase project because this Vercel team's free-tier project quota was already spoken for by other apps
 
 ## Running locally
 
@@ -33,6 +46,8 @@ The product's signature interaction, tied to the mark's third-eye motif: a thin 
 npm install
 npm run dev
 ```
+
+Required for auth locally: `BLOB_READ_WRITE_TOKEN` (from a Vercel Blob store linked to the project), `AUTH_SECRET` (any random string), `ADMIN_USERNAME`/`ADMIN_PASSWORD`. Put these in `.env.local` (gitignored). Without them, the three core checks still work — only signup/login/admin need them.
 
 Optional: set `ANTHROPIC_API_KEY` to enable LLM-enhanced clause explanations in the terms scanner. The scanner is fully functional without it.
 
