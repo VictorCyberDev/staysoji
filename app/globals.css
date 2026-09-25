@@ -1,0 +1,192 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+
+  /* teal — primary surface family, sampled from the mark */
+  --teal-950: #0a1618;
+  --teal-900: #0d1e21;
+  --teal-800: #13292c;
+  --teal-700: #1c3a3e;
+  --teal-600: #2a4d52;
+  --teal-500: #3b6169;
+
+  /* olive — the beret, used sparingly as a secondary accent */
+  --olive-600: #4a5a45;
+  --olive-500: #63753c;
+  --olive-400: #7c8c5a;
+
+  /* gold — the eye outline, reserved for the idle ring + focus states */
+  --gold-600: #a9822f;
+  --gold-500: #c9a24b;
+  --gold-400: #dab868;
+  --gold-300: #e6cd8f;
+
+  /* warm greys — the horse silhouette, used for secondary text */
+  --warm-grey-800: #46443c;
+  --warm-grey-600: #6f6c5e;
+  --warm-grey-400: #9c9686;
+  --warm-grey-200: #cbc4b3;
+
+  --paper: #f3efe6;
+  --paper-dim: #d8d2c3;
+  --ink: #0a0c0b;
+
+  /* result states — locked, never blended with the idle gold */
+  --risk-low: #5f9270;
+  --risk-low-dim: #3c5c47;
+  --risk-amber: #d3963c;
+  --risk-amber-dim: #7a5a26;
+  --risk-high: #bd5b47;
+  --risk-high-dim: #6e3529;
+
+  --background: var(--teal-950);
+  --surface: var(--teal-900);
+  --surface-raised: var(--teal-800);
+  --border-hairline: color-mix(in srgb, var(--warm-grey-400) 22%, transparent);
+  --foreground: var(--paper);
+  --foreground-dim: var(--warm-grey-200);
+  --foreground-faint: var(--warm-grey-600);
+  --accent: var(--gold-500);
+  --accent-strong: var(--gold-400);
+
+  --radius-card: 20px;
+  --radius-input: 12px;
+  --radius-pill: 999px;
+
+  --shadow-ambient: 0 24px 60px -30px rgb(6 12 12 / 0.65);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --background: var(--paper);
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --border-hairline: color-mix(in srgb, var(--teal-700) 14%, transparent);
+  --foreground: var(--ink);
+  --foreground-dim: var(--warm-grey-800);
+  --foreground-faint: var(--warm-grey-600);
+  --shadow-ambient: 0 24px 60px -30px rgb(20 30 30 / 0.18);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-foreground: var(--foreground);
+  --color-foreground-dim: var(--foreground-dim);
+  --color-foreground-faint: var(--foreground-faint);
+  --color-border-hairline: var(--border-hairline);
+
+  --color-teal-950: var(--teal-950);
+  --color-teal-900: var(--teal-900);
+  --color-teal-800: var(--teal-800);
+  --color-teal-700: var(--teal-700);
+  --color-teal-600: var(--teal-600);
+  --color-teal-500: var(--teal-500);
+
+  --color-olive-600: var(--olive-600);
+  --color-olive-500: var(--olive-500);
+  --color-olive-400: var(--olive-400);
+
+  --color-gold-600: var(--gold-600);
+  --color-gold-500: var(--gold-500);
+  --color-gold-400: var(--gold-400);
+  --color-gold-300: var(--gold-300);
+
+  --color-warm-grey-800: var(--warm-grey-800);
+  --color-warm-grey-600: var(--warm-grey-600);
+  --color-warm-grey-400: var(--warm-grey-400);
+  --color-warm-grey-200: var(--warm-grey-200);
+
+  --color-paper: var(--paper);
+  --color-paper-dim: var(--paper-dim);
+  --color-ink: var(--ink);
+
+  --color-risk-low: var(--risk-low);
+  --color-risk-low-dim: var(--risk-low-dim);
+  --color-risk-amber: var(--risk-amber);
+  --color-risk-amber-dim: var(--risk-amber-dim);
+  --color-risk-high: var(--risk-high);
+  --color-risk-high-dim: var(--risk-high-dim);
+
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+
+  --radius-card: var(--radius-card);
+  --radius-input: var(--radius-input);
+  --radius-pill: var(--radius-pill);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  border-color: var(--border-hairline);
+}
+
+html {
+  background: var(--background);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--gold-500);
+  color: var(--teal-950);
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold-400);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes iris-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.035);
+    opacity: 0.85;
+  }
+}
+
+@keyframes iris-label-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes iris-lock-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--result-color, var(--gold-500)) 35%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 14px color-mix(in srgb, var(--result-color, var(--gold-500)) 0%, transparent);
+  }
+}
