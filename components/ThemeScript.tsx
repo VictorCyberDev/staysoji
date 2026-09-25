@@ -2,7 +2,7 @@ const THEME_SCRIPT = `
 (function () {
   try {
     var stored = localStorage.getItem('staysoji-theme');
-    var theme = stored === 'light' || stored === 'dark' ? stored : 'dark';
+    var theme = stored === 'light' || stored === 'dark' ? stored : 'light';
     document.documentElement.setAttribute('data-theme', theme);
   } catch (e) {}
 })();

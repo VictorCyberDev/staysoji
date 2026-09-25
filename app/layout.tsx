@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
     title: "StaySoji",
   },
   openGraph: {
@@ -54,7 +54,7 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: light)", color: "#f3efe6" },
     { media: "(prefers-color-scheme: dark)", color: "#0d1e21" },
   ],
-  colorScheme: "dark light",
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

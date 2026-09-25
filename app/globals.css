@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
   /* teal — primary surface family, sampled from the mark */
   --teal-950: #0a1618;
@@ -40,12 +40,12 @@
   --risk-high: #bd5b47;
   --risk-high-dim: #6e3529;
 
-  --background: var(--teal-950);
-  --surface: var(--teal-900);
-  --surface-raised: var(--teal-800);
-  --border-hairline: color-mix(in srgb, var(--warm-grey-400) 22%, transparent);
-  --foreground: var(--paper);
-  --foreground-dim: var(--warm-grey-200);
+  --background: var(--paper);
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --border-hairline: color-mix(in srgb, var(--teal-700) 14%, transparent);
+  --foreground: var(--ink);
+  --foreground-dim: var(--warm-grey-800);
   --foreground-faint: var(--warm-grey-600);
   --accent: var(--gold-500);
   --accent-strong: var(--gold-400);
@@ -54,19 +54,19 @@
   --radius-input: 12px;
   --radius-pill: 999px;
 
-  --shadow-ambient: 0 24px 60px -30px rgb(6 12 12 / 0.65);
+  --shadow-ambient: 0 24px 60px -30px rgb(20 30 30 / 0.18);
 }
 
-:root[data-theme="light"] {
-  color-scheme: light;
-  --background: var(--paper);
-  --surface: #ffffff;
-  --surface-raised: #ffffff;
-  --border-hairline: color-mix(in srgb, var(--teal-700) 14%, transparent);
-  --foreground: var(--ink);
-  --foreground-dim: var(--warm-grey-800);
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: var(--teal-950);
+  --surface: var(--teal-900);
+  --surface-raised: var(--teal-800);
+  --border-hairline: color-mix(in srgb, var(--warm-grey-400) 22%, transparent);
+  --foreground: var(--paper);
+  --foreground-dim: var(--warm-grey-200);
   --foreground-faint: var(--warm-grey-600);
-  --shadow-ambient: 0 24px 60px -30px rgb(20 30 30 / 0.18);
+  --shadow-ambient: 0 24px 60px -30px rgb(6 12 12 / 0.65);
 }
 
 @theme inline {

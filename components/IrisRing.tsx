@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Check, Warning, X } from "@phosphor-icons/react/dist/ssr";
 
 export type IrisTone = "low" | "amber" | "high";
@@ -45,6 +46,8 @@ export function IrisRing({
   const strokeColor = isLocked && tone ? TONE_VAR[tone] : isError ? "var(--risk-amber)" : "var(--gold-500)";
   const strokeWidth = isLocked || isError ? 3.5 : 1.6;
   const dashArray = isLocked || isError ? undefined : `${circumference / 34} ${circumference / 58}`;
+  const showLogo = status === "idle" || status === "checking";
+  const logoSize = Math.round(size * 0.46);
 
   return (
     <div
@@ -100,6 +103,16 @@ export function IrisRing({
           >
             <Warning weight="bold" />
           </span>
+        ) : showLogo ? (
+          <Image
+            src="/icon.png"
+            alt=""
+            width={logoSize}
+            height={logoSize}
+            className="rounded-full transition-opacity duration-500"
+            style={{ opacity: status === "checking" ? 0.55 : 1 }}
+            priority
+          />
         ) : null}
       </div>
 

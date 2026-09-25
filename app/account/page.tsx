@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { UserCircle } from "@phosphor-icons/react/dist/ssr";
 import { TopBar } from "@/components/TopBar";
@@ -32,12 +33,16 @@ export default async function AccountPage() {
           </p>
         </div>
 
-        <div className="rounded-[var(--radius-card)] border border-border-hairline bg-surface/60 px-5 py-5 text-[13.5px] leading-relaxed text-foreground-dim">
-          Check history isn&rsquo;t saved to your account yet in this build &mdash; the three checks stay
-          anonymous and client-side for now. That&rsquo;s next on the roadmap.
+        <Link href="/dashboard" className="block">
+          <Button className="w-full">Go to dashboard</Button>
+        </Link>
+
+        <div className="mt-4 rounded-[var(--radius-card)] border border-border-hairline bg-surface/60 px-5 py-5 text-[13.5px] leading-relaxed text-foreground-dim">
+          Check history isn&rsquo;t saved to your account yet in this build &mdash; each check itself still runs
+          anonymously and client-side. That&rsquo;s next on the roadmap.
         </div>
 
-        <form action={signOutAction} className="mt-6">
+        <form action={signOutAction} className="mt-4">
           <Button type="submit" variant="ghost" className="w-full">
             Sign out
           </Button>
