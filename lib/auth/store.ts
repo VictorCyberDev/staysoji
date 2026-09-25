@@ -7,9 +7,25 @@ export type StoredUser = {
   passwordHash: string;
   dateOfBirth: string; // ISO yyyy-mm-dd
   createdAt: string; // ISO timestamp
+  /** Where this signup came from, for marketing attribution. */
+  source: string;
+  utmSource: string | null;
+  utmMedium: string | null;
+  utmCampaign: string | null;
+  referrer: string | null;
 };
 
 export type PublicUser = Omit<StoredUser, "passwordHash">;
+
+export type NewUserInput = {
+  email: string;
+  password: string;
+  dateOfBirth: string;
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+  referrer?: string | null;
+};
 
 function normalizeEmail(email: string): string {
   return email.trim().toLowerCase();
@@ -22,6 +38,26 @@ function userKey(email: string): string {
 
 function blobToken(): string | undefined {
   return process.env.BLOB_READ_WRITE_TOKEN;
+}
+
+function clean(value: string | null | undefined, maxLength = 120): string | null {
+  const trimmed = value?.trim();
+  if (!trimmed) return null;
+  return trimmed.slice(0, maxLength);
+}
+
+/** utm_source wins; otherwise the referrer's hostname; otherwise "Direct". */
+function deriveSource(utmSource: string | null, referrer: string | null): string {
+  if (utmSource) return utmSource;
+  if (referrer) {
+    try {
+      const host = new URL(referrer).hostname.replace(/^www\./, "");
+      if (host) return host;
+    } catch {
+      // not a parseable URL; fall through to Direct
+    }
+  }
+  return "Direct";
 }
 
 async function readJsonBlob<T>(pathname: string): Promise<T | null> {
@@ -41,16 +77,24 @@ export class UserExistsError extends Error {
   }
 }
 
-export async function createUser(email: string, password: string, dateOfBirth: string): Promise<PublicUser> {
-  const key = userKey(email);
-  const existing = await findUserByEmail(email);
+export async function createUser(input: NewUserInput): Promise<PublicUser> {
+  const key = userKey(input.email);
+  const existing = await findUserByEmail(input.email);
   if (existing) throw new UserExistsError();
 
+  const utmSource = clean(input.utmSource);
+  const referrer = clean(input.referrer, 300);
+
   const user: StoredUser = {
-    email: normalizeEmail(email),
-    passwordHash: await hashPassword(password),
-    dateOfBirth,
+    email: normalizeEmail(input.email),
+    passwordHash: await hashPassword(input.password),
+    dateOfBirth: input.dateOfBirth,
     createdAt: new Date().toISOString(),
+    source: deriveSource(utmSource, referrer),
+    utmSource,
+    utmMedium: clean(input.utmMedium),
+    utmCampaign: clean(input.utmCampaign),
+    referrer,
   };
 
   await put(key, JSON.stringify(user), {
@@ -71,9 +115,18 @@ export async function listUsers(): Promise<PublicUser[]> {
     blobs.map(async (b) => {
       const user = await readJsonBlob<StoredUser>(b.pathname);
       if (!user) return null;
-      const { passwordHash: _passwordHash, ...rest } = user;
+      const { passwordHash: _passwordHash, source, utmSource, utmMedium, utmCampaign, referrer, ...base } = user;
       void _passwordHash;
-      return rest;
+      // older records predate acquisition tracking; backfill so callers never
+      // have to null-check a field that used to not exist
+      return {
+        ...base,
+        source: source ?? "Direct",
+        utmSource: utmSource ?? null,
+        utmMedium: utmMedium ?? null,
+        utmCampaign: utmCampaign ?? null,
+        referrer: referrer ?? null,
+      } satisfies PublicUser;
     }),
   );
   return users.filter((u): u is PublicUser => u !== null).sort((a, b) => b.createdAt.localeCompare(a.createdAt));

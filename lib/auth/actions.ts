@@ -26,7 +26,15 @@ export async function signUpAction(_prev: FormState, formData: FormData): Promis
   if (age < MIN_AGE) return { error: `You must be at least ${MIN_AGE} to create a StaySoji account.` };
 
   try {
-    await createUser(email, password, dateOfBirth);
+    await createUser({
+      email,
+      password,
+      dateOfBirth,
+      utmSource: String(formData.get("utm_source") || ""),
+      utmMedium: String(formData.get("utm_medium") || ""),
+      utmCampaign: String(formData.get("utm_campaign") || ""),
+      referrer: String(formData.get("referrer") || ""),
+    });
   } catch (err) {
     if (err instanceof UserExistsError) return { error: err.message };
     return { error: "Something went wrong creating your account. Try again." };

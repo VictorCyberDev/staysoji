@@ -1,9 +1,10 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import Link from "next/link";
 import { signUpAction, type FormState } from "@/lib/auth/actions";
 import { Field, TextInput } from "@/components/Field";
+import { PasswordInput } from "@/components/PasswordInput";
 import { Button } from "@/components/Button";
 
 const initialState: FormState = { error: null };
@@ -17,6 +18,21 @@ function maxDobForMinAge(years: number): string {
 export default function SignupPage() {
   const [state, formAction, pending] = useActionState(signUpAction, initialState);
 
+  // captured client-side (URL params / referrer aren't visible to the server
+  // action otherwise) so the admin dashboard can show where signups come from
+  const [acquisition] = useState(() => {
+    if (typeof window === "undefined") {
+      return { utmSource: "", utmMedium: "", utmCampaign: "", referrer: "" };
+    }
+    const params = new URLSearchParams(window.location.search);
+    return {
+      utmSource: params.get("utm_source") ?? "",
+      utmMedium: params.get("utm_medium") ?? "",
+      utmCampaign: params.get("utm_campaign") ?? "",
+      referrer: document.referrer ?? "",
+    };
+  });
+
   return (
     <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-6 pb-16 sm:px-8 opacity-0 [animation:fade-up_0.5s_cubic-bezier(0.16,1,0.3,1)_forwards]">
       <div className="pt-6 pb-8">
@@ -27,11 +43,16 @@ export default function SignupPage() {
       </div>
 
       <form action={formAction} className="space-y-5">
+        <input type="hidden" name="utm_source" value={acquisition.utmSource} />
+        <input type="hidden" name="utm_medium" value={acquisition.utmMedium} />
+        <input type="hidden" name="utm_campaign" value={acquisition.utmCampaign} />
+        <input type="hidden" name="referrer" value={acquisition.referrer} />
+
         <Field label="Email">
           <TextInput type="email" name="email" autoComplete="email" required placeholder="you@example.com" />
         </Field>
         <Field label="Password" helper="At least 8 characters.">
-          <TextInput type="password" name="password" autoComplete="new-password" required minLength={8} />
+          <PasswordInput name="password" autoComplete="new-password" required minLength={8} />
         </Field>
         <Field label="Date of birth">
           <TextInput type="date" name="dob" required max={maxDobForMinAge(18)} min="1930-01-01" />

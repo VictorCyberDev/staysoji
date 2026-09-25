@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import Link from "next/link";
 import { signInAction, type FormState } from "@/lib/auth/actions";
 import { Field, TextInput } from "@/components/Field";
+import { PasswordInput } from "@/components/PasswordInput";
 import { Button } from "@/components/Button";
 
 const initialState: FormState = { error: null };
@@ -23,7 +24,7 @@ export default function LoginPage() {
           <TextInput type="email" name="email" autoComplete="email" required placeholder="you@example.com" />
         </Field>
         <Field label="Password">
-          <TextInput type="password" name="password" autoComplete="current-password" required />
+          <PasswordInput name="password" autoComplete="current-password" required />
         </Field>
 
         {state.error ? <p className="text-[13px] text-risk-high">{state.error}</p> : null}

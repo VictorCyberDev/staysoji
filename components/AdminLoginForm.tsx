@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { adminSignInAction, type FormState } from "@/lib/auth/actions";
 import { Field, TextInput } from "@/components/Field";
+import { PasswordInput } from "@/components/PasswordInput";
 import { Button } from "@/components/Button";
 
 const initialState: FormState = { error: null };
@@ -16,7 +17,7 @@ export function AdminLoginForm() {
         <TextInput type="text" name="username" autoComplete="username" required />
       </Field>
       <Field label="Password">
-        <TextInput type="password" name="password" autoComplete="current-password" required />
+        <PasswordInput name="password" autoComplete="current-password" required />
       </Field>
       {state.error ? <p className="text-[13px] text-risk-high">{state.error}</p> : null}
       <Button type="submit" className="w-full" disabled={pending}>
