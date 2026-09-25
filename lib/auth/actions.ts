@@ -1,24 +1,16 @@
 "use server";
 
+import { timingSafeEqual } from "node:crypto";
 import { redirect } from "next/navigation";
 import { createUser, findUserByEmail, UserExistsError } from "./store";
 import { verifyPassword } from "./crypto";
-import { setSessionCookie, clearSessionCookie } from "./session";
+import { setSessionCookie, clearSessionCookie, setAdminSessionCookie, clearAdminSessionCookie } from "./session";
+import { calculateAge } from "./age";
 
 export type FormState = { error: string | null };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_AGE = 18;
-
-function calculateAge(dob: string): number {
-  const birth = new Date(dob);
-  if (Number.isNaN(birth.getTime())) return -1;
-  const now = new Date();
-  let age = now.getFullYear() - birth.getFullYear();
-  const monthDiff = now.getMonth() - birth.getMonth();
-  if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < birth.getDate())) age--;
-  return age;
-}
 
 export async function signUpAction(_prev: FormState, formData: FormData): Promise<FormState> {
   const email = String(formData.get("email") || "").trim();
@@ -63,4 +55,34 @@ export async function signInAction(_prev: FormState, formData: FormData): Promis
 export async function signOutAction() {
   await clearSessionCookie();
   redirect("/");
+}
+
+function safeEqual(a: string, b: string): boolean {
+  const aBuf = Buffer.from(a);
+  const bBuf = Buffer.from(b);
+  if (aBuf.length !== bBuf.length) return false;
+  return timingSafeEqual(aBuf, bBuf);
+}
+
+export async function adminSignInAction(_prev: FormState, formData: FormData): Promise<FormState> {
+  const username = String(formData.get("username") || "");
+  const password = String(formData.get("password") || "");
+
+  const expectedUsername = process.env.ADMIN_USERNAME;
+  const expectedPassword = process.env.ADMIN_PASSWORD;
+
+  if (!expectedUsername || !expectedPassword) {
+    return { error: "Admin login isn't configured on this deployment." };
+  }
+  if (!safeEqual(username, expectedUsername) || !safeEqual(password, expectedPassword)) {
+    return { error: "Incorrect username or password." };
+  }
+
+  await setAdminSessionCookie();
+  redirect("/admin");
+}
+
+export async function adminSignOutAction() {
+  await clearAdminSessionCookie();
+  redirect("/admin");
 }
