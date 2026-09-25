@@ -18,7 +18,7 @@ export default function SignupPage() {
   const [state, formAction, pending] = useActionState(signUpAction, initialState);
 
   return (
-    <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-6 pb-16 sm:px-8">
+    <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-6 pb-16 sm:px-8 opacity-0 [animation:fade-up_0.5s_cubic-bezier(0.16,1,0.3,1)_forwards]">
       <div className="pt-6 pb-8">
         <h1 className="text-xl font-medium text-foreground">Create your account</h1>
         <p className="mt-2 text-[14px] leading-relaxed text-foreground-dim">

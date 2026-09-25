@@ -11,7 +11,7 @@ export default function AboutPage() {
     <div className="flex flex-1 flex-col">
       <TopBar title="About" backHref="/" />
       <div className="mx-auto w-full max-w-md flex-1 px-6 pb-16 sm:px-8">
-        <div className="space-y-6 pt-6 text-[14.5px] leading-relaxed text-foreground-dim">
+        <div className="space-y-6 pt-6 text-[14.5px] leading-relaxed text-foreground-dim opacity-0 [animation:fade-up_0.5s_cubic-bezier(0.16,1,0.3,1)_forwards]">
           <section>
             <h1 className="text-xl font-medium text-foreground">Vigilance, before you borrow.</h1>
             <p className="mt-3">

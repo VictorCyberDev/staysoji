@@ -93,6 +93,13 @@ export function IrisRing({
           >
             {TONE_ICON[tone]}
           </span>
+        ) : isError ? (
+          <span
+            className="flex h-9 w-9 items-center justify-center rounded-full text-[15px]"
+            style={{ color: strokeColor }}
+          >
+            <Warning weight="bold" />
+          </span>
         ) : null}
       </div>
 
