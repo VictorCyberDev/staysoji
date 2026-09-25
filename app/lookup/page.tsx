@@ -1,18 +1,19 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ShieldCheck } from "@phosphor-icons/react/dist/ssr";
-import { TopBar } from "@/components/TopBar";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ShieldCheck, CheckCircle } from "@phosphor-icons/react/dist/ssr";
 import { IrisRing } from "@/components/IrisRing";
 import { ResultPanel } from "@/components/ResultPanel";
 import { TextInput } from "@/components/Field";
 import { Button } from "@/components/Button";
 import { useIrisSequence } from "@/lib/useIrisSequence";
-import { searchLoanApp, getAlternatives, type LookupResult } from "@/lib/riskLookup";
+import { searchLoanApp, getAlternatives, suggestNames, type LookupResult, type Suggestion } from "@/lib/riskLookup";
 
 export default function LookupPage() {
   const [query, setQuery] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const inputWrapRef = useRef<HTMLDivElement>(null);
 
   const steps = useMemo(
     () => [
@@ -34,10 +35,32 @@ export default function LookupPage() {
 
   const sequence = useIrisSequence(steps, (results) => results[results.length - 1] as LookupResult);
 
+  const liveSuggestions = useMemo(() => (showSuggestions ? suggestNames(query, 6) : []), [query, showSuggestions]);
+
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (inputWrapRef.current && !inputWrapRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
+  }, []);
+
+  function runSearch(name: string) {
+    setQuery(name);
+    setSubmittedQuery(name);
+    setShowSuggestions(false);
+    sequence.reset();
+    // give React a tick to commit the query state before the sequence reads it
+    requestAnimationFrame(() => sequence.run());
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!query.trim()) return;
     setSubmittedQuery(query.trim());
+    setShowSuggestions(false);
     sequence.reset();
     sequence.run();
   }
@@ -50,8 +73,6 @@ export default function LookupPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-6 pb-14 sm:px-8">
-      <TopBar title="Loan app lookup" />
-
       <div className="flex flex-col items-center gap-8 pt-6 pb-10">
         <IrisRing
           status={sequence.status === "error" ? "error" : sequence.status}
@@ -64,18 +85,58 @@ export default function LookupPage() {
 
         {sequence.status !== "result" ? (
           <form onSubmit={handleSubmit} className="w-full space-y-5">
-            <label className="flex flex-col gap-2">
+            <div ref={inputWrapRef} className="relative flex flex-col gap-2">
               <span className="text-[13px] font-medium text-foreground-dim">App name</span>
               <TextInput
                 type="text"
                 placeholder="e.g. Camelloan, EaseCash, FairMoney"
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                autoComplete="off"
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  setShowSuggestions(true);
+                }}
+                onFocus={() => setShowSuggestions(true)}
+                onBlur={() => {
+                  // deferred so a suggestion's onMouseDown fires first, and so a
+                  // click landing on the submit button below is never blocked by
+                  // this dropdown sitting on top of it
+                  window.setTimeout(() => setShowSuggestions(false), 120);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setShowSuggestions(false);
+                }}
                 required
               />
-            </label>
+              {showSuggestions && liveSuggestions.length > 0 ? (
+                <ul className="absolute top-full z-10 mt-1.5 max-h-56 w-full overflow-auto rounded-[var(--radius-input)] border border-border-hairline bg-surface-raised shadow-[var(--shadow-ambient)]">
+                  {liveSuggestions.map((s) => (
+                    <li key={s.name}>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          runSearch(s.name);
+                        }}
+                        className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-[13.5px] text-foreground transition-colors hover:bg-surface"
+                      >
+                        <span>{s.name}</span>
+                        <span
+                          className={`font-mono text-[10px] uppercase tracking-[0.1em] ${
+                            s.kind === "approved" ? "text-risk-low" : "text-foreground-faint"
+                          }`}
+                        >
+                          {s.kind === "approved" ? "approved" : "registry"}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
             <p className="text-[12.5px] leading-relaxed text-foreground-faint">
               Matched against FCCPC delisting and Google Play removal records, not a scan of apps on your phone.
+              Close spellings will still surface as suggestions.
             </p>
             <Button type="submit" className="w-full" disabled={sequence.status === "checking"}>
               {sequence.status === "checking" ? "Checking…" : "Check this app"}
@@ -85,7 +146,7 @@ export default function LookupPage() {
 
         {result ? (
           <div className="w-full space-y-5">
-            {result.matched ? (
+            {result.matched && result.kind === "blacklisted" ? (
               <>
                 <ResultPanel
                   tone={result.tone}
@@ -113,10 +174,39 @@ export default function LookupPage() {
                   </ul>
                 </div>
               </>
-            ) : (
-              <NoMatchPanel query={result.query} sources={result.sources} />
-            )}
-            <Button variant="ghost" className="w-full" onClick={() => sequence.reset()}>
+            ) : null}
+
+            {result.matched && result.kind === "approved" ? (
+              <ResultPanel tone="low" title={result.app.name} sources={result.sources} showDisclaimer>
+                <p className="flex items-center gap-2">
+                  <CheckCircle size={16} className="text-risk-low" weight="fill" />
+                  {result.app.note}
+                </p>
+                <p className="text-[12.5px] text-foreground-faint">
+                  This name matches our list of FCCPC-approved lenders, not the delisted-app registry. Still run the
+                  true-cost calculator on any offer before you accept it.
+                </p>
+              </ResultPanel>
+            ) : null}
+
+            {!result.matched ? (
+              <NoMatchPanel
+                query={result.query}
+                sources={result.sources}
+                coverageNote={result.coverageNote}
+                suggestions={result.suggestions}
+                onSuggestion={runSearch}
+              />
+            ) : null}
+
+            <Button
+              variant="ghost"
+              className="w-full"
+              onClick={() => {
+                setQuery("");
+                sequence.reset();
+              }}
+            >
               Look up another app
             </Button>
           </div>
@@ -126,20 +216,56 @@ export default function LookupPage() {
   );
 }
 
-function NoMatchPanel({ query, sources }: { query: string; sources: string[] }) {
+function NoMatchPanel({
+  query,
+  sources,
+  coverageNote,
+  suggestions,
+  onSuggestion,
+}: {
+  query: string;
+  sources: string[];
+  coverageNote: string;
+  suggestions: Suggestion[];
+  onSuggestion: (name: string) => void;
+}) {
   return (
     <section className="w-full max-w-md space-y-4">
       <div className="rounded-[var(--radius-card)] border border-border-hairline bg-surface px-6 py-6">
         <span className="inline-flex items-center gap-2 rounded-[var(--radius-pill)] border border-border-hairline px-3 py-1 font-mono text-[10.5px] uppercase tracking-[0.14em] text-foreground-faint">
           Not in our verified records
         </span>
-        <h2 className="mt-4 text-xl leading-snug font-medium text-foreground">&ldquo;{query}&rdquo; isn&rsquo;t in this dataset yet</h2>
-        <p className="mt-3 text-[14px] leading-relaxed text-foreground-dim">
-          That doesn&rsquo;t mean it&rsquo;s safe. Our list covers roughly 40 apps with a documented FCCPC or Google
-          Play action, a small fraction of what&rsquo;s in circulation. Run these three checks yourself before you
-          borrow.
-        </p>
+        <h2 className="mt-4 text-xl leading-snug font-medium text-foreground">
+          &ldquo;{query}&rdquo; isn&rsquo;t in this dataset yet
+        </h2>
+        <p className="mt-3 text-[14px] leading-relaxed text-foreground-dim">{coverageNote}</p>
       </div>
+
+      {suggestions.length > 0 ? (
+        <div className="rounded-[var(--radius-card)] border border-border-hairline bg-surface/60 px-5 py-5">
+          <p className="text-[13px] font-medium text-foreground">Did you mean one of these?</p>
+          <ul className="mt-3 space-y-1">
+            {suggestions.map((s) => (
+              <li key={s.name}>
+                <button
+                  type="button"
+                  onClick={() => onSuggestion(s.name)}
+                  className="flex w-full items-center justify-between gap-3 rounded-[var(--radius-input)] px-2 py-2 text-left text-[13.5px] text-foreground transition-colors hover:bg-surface"
+                >
+                  <span>{s.name}</span>
+                  <span
+                    className={`font-mono text-[10px] uppercase tracking-[0.1em] ${
+                      s.kind === "approved" ? "text-risk-low" : "text-foreground-faint"
+                    }`}
+                  >
+                    {s.kind === "approved" ? "approved" : "registry"}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
 
       <div className="space-y-3">
         <ChecklistCard

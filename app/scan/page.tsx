@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { TopBar } from "@/components/TopBar";
 import { IrisRing } from "@/components/IrisRing";
 import { ResultPanel } from "@/components/ResultPanel";
 import { Button } from "@/components/Button";
@@ -75,7 +74,6 @@ export default function ScanPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-6 pb-14 sm:px-8">
-      <TopBar title="Terms scanner" />
 
       <div className="flex flex-col items-center gap-8 pt-6 pb-10">
         <IrisRing

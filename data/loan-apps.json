@@ -4,14 +4,18 @@
     "https://www.icirnigeria.org/delisted-loan-apps-from-google-play-store-rise-to-37-fccpc/",
     "https://nairacompare.ng/blogs/full-list-illegal-loan-apps-delisted-by-the-fg-updated-2026",
     "https://www.legit.ng/business-economy/industry/1720684-fccpc-updates-list-approved-loan-apps-nigeria-digital-lending-regulation-resumes/",
+    "https://www.legit.ng/nigeria/1691590-federal-government-updates-nigerians-list-46-illegal-loan-apps-2026/",
+    "https://www.legit.ng/nigeria/1691616-federal-government-update-list-approved-loan-apps-2026/",
+    "https://www.legit.ng/nigeria/1706182-federal-government-releases-updated-list-400-approved-loan-apps-2026/",
     "https://fccpc.gov.ng/registration-of-digital-money-lenders/"
   ],
+  "coverage_note": "This dataset is a curated sample, not the full FCCPC register. The commission has stated it blacklisted 45 apps in January 2026 and approved over 430 digital lenders, but has not published either as a single complete public list as of this update. If a search here comes back with no match, that is not a certification of safety — check the live register at fccpc.gov.ng/registration-of-digital-money-lenders before you borrow.",
   "blacklisted_apps": [
     { "name": "Getloan", "score": 9, "reason": "Permanently delisted by FCCPC/Google Play (Sept 2023) specifically for violating consumer privacy guidelines.", "action_date": "2023-09" },
     { "name": "Camelloan", "score": 9, "reason": "Permanently delisted by FCCPC/Google Play (Sept 2023) specifically for violating consumer privacy guidelines.", "action_date": "2023-09" },
-    { "name": "WeCredit", "score": 9, "reason": "Blacklisted January 2026 for non-compliance with the DEON digital-lending framework.", "action_date": "2026-01" },
-    { "name": "Hen Credit Loan", "score": 9, "reason": "Delisted Sept 2023 for operating without approval; additionally blacklisted Jan 2026 for DEON non-compliance.", "action_date": "2026-01" },
-    { "name": "Cash Door", "score": 9, "reason": "Delisted Sept 2023 for operating without approval; additionally blacklisted Jan 2026 for DEON non-compliance.", "action_date": "2026-01" },
+    { "name": "WeCredit", "score": 9, "reason": "Blacklisted January 2026 for non-compliance with the DEON digital-lending framework; reporting specifically cites unethical debt-collection practices, including harassment and invasion of borrower privacy.", "action_date": "2026-01" },
+    { "name": "Hen Credit Loan", "score": 9, "reason": "Delisted Sept 2023 for operating without approval; additionally blacklisted Jan 2026 for DEON non-compliance, with reporting citing misleading loan terms, excessive interest rates, and unauthorized account deductions.", "action_date": "2026-01" },
+    { "name": "Cash Door", "score": 9, "reason": "Delisted Sept 2023 for operating without approval; additionally blacklisted Jan 2026 for DEON non-compliance, with reporting citing continued operation without a proper digital lending license.", "action_date": "2026-01" },
     { "name": "Swiftkash", "score": 8, "reason": "Delisted by FCCPC/Google Play (Sept 2023) for operating without regulatory approval under the 2022 Digital Lending Framework.", "action_date": "2023-09" },
     { "name": "Joy Cash", "score": 8, "reason": "Delisted for operating without FCCPC approval.", "action_date": "2023-09" },
     { "name": "Eaglecash", "score": 8, "reason": "Delisted for operating without FCCPC approval.", "action_date": "2023-09" },
@@ -54,6 +58,11 @@
     { "name": "OKash", "note": "FCCPC-approved; OPay-backed" },
     { "name": "QuickCheck", "note": "FCCPC-approved" },
     { "name": "Aella Credit", "note": "FCCPC-approved; salary advances" },
-    { "name": "Umba", "note": "FCCPC-approved" }
+    { "name": "Umba", "note": "FCCPC-approved" },
+    { "name": "Clan App", "note": "FCCPC-approved; operated by CreditClan Tech Limited" },
+    { "name": "Kashout", "note": "FCCPC-approved; operated by Acetech Finance Limited" },
+    { "name": "FlashCredit", "note": "FCCPC-approved; operated by Acetech Finance Limited" },
+    { "name": "SwiftCredit", "note": "FCCPC-approved; operated by Acetech Finance Limited" },
+    { "name": "RapidLoans", "note": "FCCPC-approved; operated by Acetech Finance Limited" }
   ]
 }
