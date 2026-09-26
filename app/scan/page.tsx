@@ -80,6 +80,7 @@ export default function ScanPage() {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ type: "scan", summary, tone: result.tone }),
+      keepalive: true,
     }).catch(() => {});
   }, [result]);
 

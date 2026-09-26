@@ -82,6 +82,7 @@ export default function LookupPage() {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ type: "lookup", summary, tone }),
+      keepalive: true,
     }).catch(() => {});
   }, [result, tone]);
 

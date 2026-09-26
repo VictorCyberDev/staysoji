@@ -76,6 +76,7 @@ export default function CalculatePage() {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ type: "calculate", summary, tone }),
+      keepalive: true,
     }).catch(() => {});
   }, [result, principal, tone]);
 
