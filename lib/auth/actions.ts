@@ -4,10 +4,12 @@ import { timingSafeEqual } from "node:crypto";
 import { redirect } from "next/navigation";
 import { createUser, findUserByEmail, UserExistsError } from "./store";
 import { verifyPassword } from "./crypto";
-import { setSessionCookie, clearSessionCookie, setAdminSessionCookie, clearAdminSessionCookie } from "./session";
+import { setSessionCookie, clearSessionCookie, setAdminSessionCookie, clearAdminSessionCookie, getSessionUser } from "./session";
 import { calculateAge } from "./age";
+import { submitFeatureRequest } from "../featureRequests";
 
 export type FormState = { error: string | null };
+export type FeatureRequestState = { error: string | null; success: boolean };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_AGE = 18;
@@ -93,4 +95,19 @@ export async function adminSignInAction(_prev: FormState, formData: FormData): P
 export async function adminSignOutAction() {
   await clearAdminSessionCookie();
   redirect("/admin");
+}
+
+export async function submitFeatureRequestAction(
+  _prev: FeatureRequestState,
+  formData: FormData,
+): Promise<FeatureRequestState> {
+  const session = await getSessionUser();
+  if (!session) return { error: "Sign in to send a feature request.", success: false };
+
+  const message = String(formData.get("message") || "").trim();
+  if (!message) return { error: "Tell us what you'd like to see.", success: false };
+  if (message.length > 2000) return { error: "Keep it under 2,000 characters.", success: false };
+
+  await submitFeatureRequest(session.email, message);
+  return { error: null, success: true };
 }

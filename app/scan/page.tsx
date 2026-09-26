@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { IrisRing } from "@/components/IrisRing";
 import { ResultPanel } from "@/components/ResultPanel";
 import { Button } from "@/components/Button";
@@ -71,6 +71,17 @@ export default function ScanPage() {
   }
 
   const result = sequence.status === "result" ? sequence.result : null;
+
+  useEffect(() => {
+    if (!result) return;
+    const count = result.clauses.length;
+    const summary = `${result.source} — ${count} flagged clause${count === 1 ? "" : "s"}`;
+    fetch("/api/history", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ type: "scan", summary, tone: result.tone }),
+    }).catch(() => {});
+  }, [result]);
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-6 pb-14 sm:px-8">

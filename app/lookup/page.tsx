@@ -71,6 +71,20 @@ export default function LookupPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const alternatives = useMemo(() => getAlternatives(3), [submittedQuery]);
 
+  useEffect(() => {
+    if (!result) return;
+    const summary = result.matched
+      ? result.kind === "blacklisted"
+        ? `${result.app.name} — flagged in registry`
+        : `${result.app.name} — approved alternative`
+      : `"${result.query}" — no match found`;
+    fetch("/api/history", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ type: "lookup", summary, tone }),
+    }).catch(() => {});
+  }, [result, tone]);
+
   return (
     <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-6 pb-14 sm:px-8">
       <div className="flex flex-col items-center gap-8 pt-6 pb-10">

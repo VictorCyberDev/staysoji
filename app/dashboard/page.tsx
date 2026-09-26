@@ -45,7 +45,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <TopBar />
+      <TopBar menu />
       <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-6 pb-10 sm:px-8">
         <div className="flex flex-1 flex-col items-center justify-center gap-8 py-8 opacity-0 [animation:fade-up_0.7s_cubic-bezier(0.16,1,0.3,1)_0.05s_forwards]">
           <IrisRing status="idle" size={196} />

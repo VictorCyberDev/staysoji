@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
-import { put, get, list } from "@vercel/blob";
+import { list } from "@vercel/blob";
 import { hashPassword } from "./crypto";
+import { blobToken, readJsonBlob, writeJsonBlob } from "../blobStore";
 
 export type StoredUser = {
   email: string;
@@ -36,10 +37,6 @@ function userKey(email: string): string {
   return `users/${hash}.json`;
 }
 
-function blobToken(): string | undefined {
-  return process.env.BLOB_READ_WRITE_TOKEN;
-}
-
 function clean(value: string | null | undefined, maxLength = 120): string | null {
   const trimmed = value?.trim();
   if (!trimmed) return null;
@@ -58,13 +55,6 @@ function deriveSource(utmSource: string | null, referrer: string | null): string
     }
   }
   return "Direct";
-}
-
-async function readJsonBlob<T>(pathname: string): Promise<T | null> {
-  const result = await get(pathname, { access: "private", token: blobToken() });
-  if (!result || !result.stream) return null;
-  const text = await new Response(result.stream).text();
-  return JSON.parse(text) as T;
 }
 
 export async function findUserByEmail(email: string): Promise<StoredUser | null> {
@@ -97,12 +87,7 @@ export async function createUser(input: NewUserInput): Promise<PublicUser> {
     referrer,
   };
 
-  await put(key, JSON.stringify(user), {
-    access: "private",
-    addRandomSuffix: false,
-    contentType: "application/json",
-    token: blobToken(),
-  });
+  await writeJsonBlob(key, user);
 
   const { passwordHash: _passwordHash, ...publicUser } = user;
   void _passwordHash;

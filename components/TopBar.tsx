@@ -3,8 +3,9 @@ import Image from "next/image";
 import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AccountLink } from "@/components/AccountLink";
+import { AppMenu } from "@/components/AppMenu";
 
-export function TopBar({ title, backHref }: { title?: string; backHref?: string }) {
+export function TopBar({ title, backHref, menu }: { title?: string; backHref?: string; menu?: boolean }) {
   return (
     <header className="mx-auto flex w-full max-w-md items-center justify-between gap-3 px-6 pt-[calc(env(safe-area-inset-top)+18px)] pb-2 sm:px-8">
       <div className="flex min-w-0 items-center gap-3">
@@ -34,7 +35,7 @@ export function TopBar({ title, backHref }: { title?: string; backHref?: string 
         )}
       </div>
       <div className="flex shrink-0 items-center gap-2">
-        <AccountLink />
+        {menu ? <AppMenu /> : <AccountLink />}
         <ThemeToggle />
       </div>
     </header>

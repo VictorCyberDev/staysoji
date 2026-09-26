@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { IrisRing } from "@/components/IrisRing";
 import { ResultPanel } from "@/components/ResultPanel";
 import { Field, TextInput } from "@/components/Field";
@@ -68,6 +68,16 @@ export default function CalculatePage() {
 
   const result = sequence.status === "result" ? (sequence.result as AprResult) : null;
   const tone = result ? (result.baitFlag?.level === "confirmed" ? "high" : classifyApr(result.trueApr)) : "amber";
+
+  useEffect(() => {
+    if (!result) return;
+    const summary = `₦${Number(principal).toLocaleString("en-NG")} over ${result.statedDurationDays}d → True APR ${result.trueApr.toLocaleString("en-NG", { maximumFractionDigits: 0 })}%`;
+    fetch("/api/history", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ type: "calculate", summary, tone }),
+    }).catch(() => {});
+  }, [result, principal, tone]);
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-6 pb-14 sm:px-8">

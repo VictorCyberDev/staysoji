@@ -8,6 +8,7 @@ import { listUsers } from "@/lib/auth/store";
 import { calculateAge } from "@/lib/auth/age";
 import { signupsByDay, ageDistribution, sourceBreakdown } from "@/lib/auth/analytics";
 import { adminSignOutAction } from "@/lib/auth/actions";
+import { listFeatureRequests } from "@/lib/featureRequests";
 import type { PublicUser } from "@/lib/auth/store";
 
 export const metadata: Metadata = {
@@ -49,6 +50,7 @@ export default async function AdminPage() {
   const dailySignups = signupsByDay(users, 14);
   const ages = ageDistribution(users);
   const sources = sourceBreakdown(users);
+  const featureRequests = await listFeatureRequests();
 
   return (
     <div className="flex flex-1 flex-col">
@@ -121,6 +123,30 @@ export default async function AdminPage() {
                 </div>
               ))}
             </div>
+          )}
+        </div>
+
+        <div className="mt-8">
+          <h2 className="flex items-baseline gap-2 text-[15px] font-medium text-foreground">
+            Feature requests
+            <span className="font-mono text-[12px] font-normal text-foreground-faint">{featureRequests.length}</span>
+          </h2>
+          {featureRequests.length === 0 ? (
+            <p className="mt-3 rounded-[var(--radius-card)] border border-border-hairline bg-surface/60 px-5 py-8 text-center text-[13.5px] text-foreground-faint">
+              No feature requests yet.
+            </p>
+          ) : (
+            <ul className="mt-3 space-y-3">
+              {featureRequests.map((r) => (
+                <li key={r.id} className="rounded-[var(--radius-card)] border border-border-hairline bg-surface/60 px-5 py-4">
+                  <p className="text-[13.5px] leading-relaxed text-foreground">{r.message}</p>
+                  <p className="mt-2 font-mono text-[11px] text-foreground-faint">
+                    {r.email} &middot;{" "}
+                    {new Date(r.createdAt).toLocaleDateString("en-NG", { year: "numeric", month: "short", day: "numeric" })}
+                  </p>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
       </div>
