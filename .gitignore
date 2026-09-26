@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# HyperFrames video-authoring tooling (installed skills, not project source)
+/.agents/
+/.claude/
+/skills-lock.json
+
+# HyperFrames video projects: keep composition source + rendered output,
+# skip installed deps and reproducible intermediate capture/QA artifacts
+videos/*/node_modules/
+videos/*/capture/
+videos/*/snapshots/

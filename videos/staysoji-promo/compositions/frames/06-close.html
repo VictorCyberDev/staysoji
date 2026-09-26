@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Geist";
+          src: url("assets/fonts/geist-sans.woff2") format("woff2");
+          font-weight: 100 900;
+          font-display: block;
+        }
+        @font-face {
+          font-family: "Geist Mono";
+          src: url("assets/fonts/geist-mono.woff2") format("woff2");
+          font-weight: 100 900;
+          font-display: block;
+        }
+        #root {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          background: #0a1618;
+          font-family: "Geist", system-ui, sans-serif;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+        .lockup {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 28px;
+        }
+        .icon-wrap {
+          position: relative;
+          width: 300px;
+          height: 300px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .icon-wrap img {
+          width: 66%;
+          height: 66%;
+          border-radius: 999px;
+          opacity: 0;
+          transform: scale(0.85);
+        }
+        .ring {
+          position: absolute;
+          inset: 0;
+          opacity: 0;
+          transform: scale(0.7) rotate(-18deg);
+        }
+        .wordmark {
+          font-family: "Geist Mono", monospace;
+          font-size: 46px;
+          font-weight: 500;
+          letter-spacing: 0.22em;
+          color: #f3efe6;
+          opacity: 0;
+        }
+        .tagline {
+          font-size: 34px;
+          font-weight: 400;
+          color: rgba(243, 239, 230, 0.75);
+          text-align: center;
+          opacity: 0;
+        }
+        .cta-pill {
+          margin-top: 8px;
+          padding: 18px 40px;
+          border-radius: 999px;
+          background: #c9a24b;
+          color: #0a1618;
+          font-family: "Geist Mono", monospace;
+          font-size: 30px;
+          font-weight: 500;
+          letter-spacing: 0.04em;
+          opacity: 0;
+        }
+      </style>
+
+      <div id="root" data-composition-id="06-close" data-width="1080" data-height="1920">
+        <div class="lockup">
+          <div class="icon-wrap">
+            <svg class="ring" id="ring" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+              <circle
+                cx="150"
+                cy="150"
+                r="128"
+                fill="none"
+                stroke="#c9a24b"
+                stroke-width="4"
+                stroke-dasharray="16 12"
+              />
+            </svg>
+            <img src="assets/app-icon-512.png" alt="" id="icon" />
+          </div>
+          <div class="wordmark" id="wordmark">STAYSOJI</div>
+          <div class="tagline" id="tagline">Stay alert before you borrow.</div>
+          <div class="cta-pill" id="cta">staysoji.vercel.app</div>
+        </div>
+      </div>
+
+      <script>
+        const tl = gsap.timeline({ paused: true });
+
+        // Scene 2 (0.5-1.6s): icon settles in; the dashed ring draws on around it.
+        tl.fromTo("#icon", { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.0, ease: "power3.out" }, 0.5);
+        tl.fromTo(
+          "#ring",
+          { scale: 0.7, opacity: 0, rotation: -18 },
+          { scale: 1, opacity: 1, rotation: 0, duration: 1.1, ease: "power3.out" },
+          0.5,
+        );
+
+        // Scene 3 (1.6-2.6s): wordmark fades up beneath the icon.
+        tl.fromTo("#wordmark", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 1.6);
+
+        // Scene 4 (2.6-3.6s): tagline fades in, closing the loop from Frame 1.
+        tl.fromTo("#tagline", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 2.6);
+
+        // Scene 5 (3.6-5.0s): URL pill fades in last and everything holds static.
+        tl.fromTo("#cta", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 3.6);
+
+        window.__timelines["06-close"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

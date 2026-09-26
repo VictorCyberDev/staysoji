@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Geist";
+          src: url("assets/fonts/geist-sans.woff2") format("woff2");
+          font-weight: 100 900;
+          font-display: block;
+        }
+        @font-face {
+          font-family: "Geist Mono";
+          src: url("assets/fonts/geist-mono.woff2") format("woff2");
+          font-weight: 100 900;
+          font-display: block;
+        }
+        #root {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          background: #f3efe6;
+          font-family: "Geist", system-ui, sans-serif;
+        }
+        .stage-wrap {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .stage {
+          position: relative;
+          width: 66%;
+          aspect-ratio: 860 / 1864;
+          opacity: 0;
+        }
+        .stage img {
+          width: 100%;
+          height: 100%;
+          display: block;
+          border-radius: 20px;
+          box-shadow: 0 24px 60px -30px rgba(20, 30, 30, 0.35);
+        }
+        .box {
+          position: absolute;
+          border: 3px solid #c9a24b;
+          border-radius: 14px;
+          opacity: 0;
+          transform: scale(0.94);
+          transform-origin: center;
+        }
+        .box-duration-fee {
+          left: 3%;
+          top: 40.2%;
+          width: 94%;
+          height: 9%;
+        }
+        .box-actual {
+          left: 1%;
+          top: 55.4%;
+          width: 98%;
+          height: 8%;
+        }
+        .callout {
+          position: absolute;
+          font-family: "Geist Mono", monospace;
+          font-weight: 500;
+          font-size: 34px;
+          letter-spacing: 0.02em;
+          color: #0a0c0b;
+          background: #f3efe6;
+          border: 2px solid #c9a24b;
+          border-radius: 12px;
+          padding: 10px 22px;
+          opacity: 0;
+        }
+        .callout-1 {
+          left: 3%;
+          top: 33.5%;
+        }
+        .callout-2 {
+          left: 3%;
+          top: 66%;
+        }
+      </style>
+
+      <div id="root" data-composition-id="02-setup" data-width="1080" data-height="1920">
+        <div class="stage-wrap">
+          <div class="stage" id="stage">
+            <img src="assets/calc-filled.png" alt="" />
+            <div class="box box-duration-fee" id="box1"></div>
+            <div class="box box-actual" id="box2"></div>
+            <div class="callout callout-1" id="callout1">sounds small enough</div>
+            <div class="callout callout-2" id="callout2">but read the fine print</div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        const tl = gsap.timeline({ paused: true });
+
+        // Scene 1 (0.0-1.0s): the filled form slides up into frame.
+        tl.fromTo(
+          "#stage",
+          { y: 140, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1.0, ease: "power3.out" },
+          0,
+        );
+
+        // Scene 2 (1.0-2.0s): box + callout on duration/fee.
+        tl.to("#box1", { opacity: 1, scale: 1, duration: 0.4, ease: "power2.out" }, 1.0);
+        tl.to("#callout1", { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 1.15, );
+
+        // Scene 3 (2.0-3.2s): box1 relaxes to a resting outline, box2 + second callout emphasize.
+        tl.to("#box1", { borderColor: "rgba(201,162,75,0.35)", duration: 0.4 }, 2.0);
+        tl.to("#callout1", { opacity: 0.5, duration: 0.4 }, 2.0);
+        tl.to("#box2", { opacity: 1, scale: 1, duration: 0.4, ease: "power2.out" }, 2.0);
+        tl.to("#callout2", { opacity: 1, duration: 0.4, ease: "power2.out" }, 2.15);
+
+        // Scene 4 (3.2-4.0s): both boxes pulse once together, priming the cut.
+        tl.to(["#box1", "#box2"], { borderColor: "#dab868", duration: 0.15, yoyo: true, repeat: 1 }, 3.3);
+
+        window.__timelines["02-setup"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

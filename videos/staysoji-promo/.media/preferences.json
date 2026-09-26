@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "preferences": {
+    "destination": {
+      "value": "reels",
+      "confirmed_in": [
+        "staysoji-promo"
+      ],
+      "updated_at": "2026-09-26T13:15:24.223Z"
+    },
+    "aspect": {
+      "value": "1080x1920",
+      "confirmed_in": [
+        "staysoji-promo"
+      ],
+      "updated_at": "2026-09-26T13:15:24.275Z"
+    },
+    "language": {
+      "value": "en",
+      "confirmed_in": [
+        "staysoji-promo"
+      ],
+      "updated_at": "2026-09-26T13:15:24.325Z"
+    },
+    "flow": {
+      "value": "automation",
+      "confirmed_in": [
+        "staysoji-promo"
+      ],
+      "updated_at": "2026-09-26T13:15:24.377Z"
+    },
+    "storyboard": {
+      "value": "no",
+      "confirmed_in": [
+        "staysoji-promo"
+      ],
+      "updated_at": "2026-09-26T13:15:24.434Z"
+    }
+  },
+  "sightings": {}
+}

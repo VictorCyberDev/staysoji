@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Geist";
+          src: url("assets/fonts/geist-sans.woff2") format("woff2");
+          font-weight: 100 900;
+          font-display: block;
+        }
+        @font-face {
+          font-family: "Geist Mono";
+          src: url("assets/fonts/geist-mono.woff2") format("woff2");
+          font-weight: 100 900;
+          font-display: block;
+        }
+        #root {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          background: #0a1618;
+          font-family: "Geist", system-ui, sans-serif;
+        }
+        .eyebrow {
+          position: absolute;
+          top: 8%;
+          left: 0;
+          right: 0;
+          text-align: center;
+          font-family: "Geist Mono", monospace;
+          font-size: 28px;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: #dab868;
+          opacity: 0;
+        }
+        .stage-wrap {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .stage {
+          position: relative;
+          width: 66%;
+          aspect-ratio: 860 / 1864;
+          opacity: 0;
+        }
+        .stage img {
+          width: 100%;
+          display: block;
+          border-radius: 20px;
+          box-shadow: 0 24px 60px -30px rgba(20, 30, 30, 0.4);
+        }
+        .sweep {
+          position: absolute;
+          left: 8%;
+          top: 44%;
+          width: 0%;
+          height: 12.5%;
+          background: rgba(201, 162, 75, 0.28);
+          border-radius: 4px;
+        }
+        .badge-glow {
+          position: absolute;
+          left: 8%;
+          top: 31.5%;
+          width: 26%;
+          height: 4%;
+          border-radius: 999px;
+          box-shadow: 0 0 40px 14px rgba(189, 91, 71, 0.45);
+          opacity: 0.9;
+        }
+      </style>
+
+      <div id="root" data-composition-id="04-lookup" data-width="1080" data-height="1920" data-duration="5.5">
+        <div class="eyebrow" id="eyebrow" data-layout-allow-overlap>Checked against the real registry</div>
+        <div class="stage-wrap">
+          <div class="stage" id="stage">
+            <img src="assets/lookup-result.png" alt="" />
+            <div class="badge-glow" id="badge-glow"></div>
+            <div class="sweep" id="sweep"></div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        const tl = gsap.timeline({ paused: true });
+
+        // Scene 1 (0.0-0.3s): eyebrow line.
+        tl.to("#eyebrow", { opacity: 1, duration: 0.25, ease: "power2.out" }, 0.05);
+
+        // Scene 2 (0.3-1.3s): the real result slides up + crossfades in.
+        tl.fromTo("#stage", { y: 80, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" }, 0.3);
+
+        // Scene 3 (1.3-3.6s): gold sweep bar under the blacklist sentence, reading pace.
+        tl.to("#sweep", { width: "84%", duration: 1.4, ease: "power1.inOut" }, 1.6);
+        tl.to("#sweep", { opacity: 0, duration: 0.5 }, 3.2);
+
+        // Scene 4 (3.6-5.0s): held read, badge keeps its idle breathe from the previous frame.
+        tl.to("#badge-glow", { opacity: 0.75, duration: 0.6, ease: "sine.inOut", yoyo: true, repeat: 1 }, 3.8);
+
+        window.__timelines["04-lookup"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

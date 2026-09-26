@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Geist";
+          src: url("assets/fonts/geist-sans.woff2") format("woff2");
+          font-weight: 100 900;
+          font-display: block;
+        }
+        @font-face {
+          font-family: "Geist Mono";
+          src: url("assets/fonts/geist-mono.woff2") format("woff2");
+          font-weight: 100 900;
+          font-display: block;
+        }
+        #root {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          background: #0a1618;
+          font-family: "Geist", system-ui, sans-serif;
+        }
+        .field {
+          position: absolute;
+          inset: 0;
+        }
+        .type-layer {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0 8%;
+        }
+        .type-text {
+          font-size: 76px;
+          font-weight: 500;
+          line-height: 1.12;
+          letter-spacing: -0.01em;
+          color: #f3efe6;
+          white-space: pre-line;
+          text-align: center;
+        }
+        .cursor {
+          display: inline-block;
+          width: 6px;
+          height: 64px;
+          background: #c9a24b;
+          margin-left: 4px;
+          vertical-align: -8px;
+        }
+        .shot-layer {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
+          padding-top: 0;
+        }
+        .shot-layer img {
+          width: 86%;
+          height: auto;
+          display: block;
+        }
+      </style>
+
+      <div id="root" data-composition-id="01-hook" data-width="1080" data-height="1920" data-duration="5">
+        <div class="field"></div>
+        <div class="type-layer" id="type-layer">
+          <div class="type-text"><span id="typed"></span><span class="cursor" id="cursor"></span></div>
+        </div>
+        <div class="shot-layer" id="shot-layer" style="opacity: 0;">
+          <img src="assets/landing.png" alt="" />
+        </div>
+      </div>
+
+      <script src="assets/vendor/TextPlugin.min.js"></script>
+      <script>
+        gsap.registerPlugin(TextPlugin);
+
+        const tl = gsap.timeline({ paused: true });
+        const FULL_TEXT = "Stay alert\nbefore you borrow.";
+
+        // Scene 1 (0.0-0.6s): bare field, cursor blinking idle.
+        gsap.set("#cursor", { opacity: 1 });
+        tl.to("#cursor", { opacity: 0, duration: 0.25, repeat: 1, yoyo: true, ease: "steps(1)" }, 0.15);
+
+        // Scene 2 (0.6-2.6s): type the headline.
+        tl.to(
+          "#typed",
+          { text: { value: FULL_TEXT }, duration: 2.0, ease: "none" },
+          0.6,
+        );
+        tl.to("#cursor", { opacity: 0, duration: 0.15, repeat: 5, yoyo: true, ease: "steps(1)" }, 2.6);
+
+        // Scene 3 (2.6-3.3s): hold the finished line, then crossfade to the real screenshot.
+        tl.to("#type-layer", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 3.0);
+        tl.to("#shot-layer", { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 3.0);
+
+        // Scene 4 (3.3-4.5s): held read, a slow subtle breathe on the whole shot.
+        tl.fromTo(
+          "#shot-layer img",
+          { scale: 1 },
+          { scale: 1.015, duration: 1.2, ease: "sine.inOut" },
+          3.3,
+        );
+
+        window.__timelines["01-hook"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

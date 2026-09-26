@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Geist";
+          src: url("assets/fonts/geist-sans.woff2") format("woff2");
+          font-weight: 100 900;
+          font-display: block;
+        }
+        @font-face {
+          font-family: "Geist Mono";
+          src: url("assets/fonts/geist-mono.woff2") format("woff2");
+          font-weight: 100 900;
+          font-display: block;
+        }
+        #root {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          background: #0a1618;
+          font-family: "Geist", system-ui, sans-serif;
+        }
+        .field {
+          position: absolute;
+          inset: 0;
+        }
+        .advertised-line {
+          position: absolute;
+          top: 12%;
+          left: 0;
+          right: 0;
+          text-align: center;
+          font-family: "Geist Mono", monospace;
+          font-size: 30px;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: #dab868;
+          opacity: 0;
+        }
+        .counter-wrap {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .counter-inner {
+          display: flex;
+          align-items: baseline;
+          justify-content: center;
+        }
+        .counter {
+          font-variant-numeric: tabular-nums;
+          display: inline-block;
+          font-size: 260px;
+          font-weight: 500;
+          color: #c9a24b;
+          transform-origin: center center;
+        }
+        .counter-suffix {
+          font-size: 140px;
+          font-weight: 500;
+          color: #c9a24b;
+          margin-left: 6px;
+        }
+        .counter-caption {
+          position: absolute;
+          top: 68%;
+          left: 0;
+          right: 0;
+          text-align: center;
+          font-family: "Geist Mono", monospace;
+          font-size: 34px;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: #f3efe6;
+          opacity: 0;
+        }
+        .shot-layer {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
+          opacity: 0;
+        }
+        .shot-stage {
+          position: relative;
+          width: 86%;
+        }
+        .shot-stage img {
+          width: 100%;
+          display: block;
+        }
+        .badge-glow {
+          position: absolute;
+          left: 8%;
+          top: 31.5%;
+          width: 26%;
+          height: 4%;
+          border-radius: 999px;
+          box-shadow: 0 0 0 0 rgba(189, 91, 71, 0);
+          pointer-events: none;
+        }
+        .panel-frame {
+          position: absolute;
+          left: 8%;
+          top: 66.5%;
+          width: 84%;
+          height: 17%;
+          border: 3px solid #c9a24b;
+          border-radius: 16px;
+          opacity: 0;
+        }
+      </style>
+
+      <div id="root" data-composition-id="03-reveal" data-width="1080" data-height="1920" data-duration="9">
+        <div class="field"></div>
+        <div class="advertised-line" id="advertised">Advertised: 10% fee, 22 days</div>
+        <div class="counter-wrap" id="counter-wrap" data-layout-allow-occlusion>
+          <div class="counter-inner">
+            <span class="counter" id="counter">10</span><span class="counter-suffix">%</span>
+          </div>
+        </div>
+        <div class="counter-caption" id="counter-caption" data-layout-allow-occlusion>True APR</div>
+        <div class="shot-layer" id="shot-layer">
+          <div class="shot-stage">
+            <img src="assets/calc-result.png" alt="" />
+            <div class="badge-glow" id="badge-glow"></div>
+            <div class="panel-frame" id="panel-frame"></div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        const tl = gsap.timeline({ paused: true });
+        const state = { value: 10 };
+        const counter = document.getElementById("counter");
+        const START_SCALE = 0.55;
+
+        // Scene 1 (0.0-0.5s): bare field, the advertised terms line in.
+        tl.to("#advertised", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.1);
+
+        // Scene 2 (0.5-3.0s): count 10 -> 184, decelerating, color shifts gold -> red past 60.
+        tl.to(
+          state,
+          {
+            value: 184,
+            duration: 2.5,
+            ease: "power3.out",
+            onUpdate: () => {
+              const v = Math.round(state.value);
+              counter.textContent = v;
+              counter.style.color = v >= 60 ? "#bd5b47" : "#c9a24b";
+            },
+          },
+          0.5,
+        );
+        tl.fromTo("#counter", { scale: START_SCALE }, { scale: 1, duration: 2.5, ease: "power3.out" }, 0.5);
+        tl.to("#advertised", { opacity: 0, duration: 0.3 }, 1.6);
+
+        // Scene 3 (3.0-3.6s): freeze on 184%, caption fades in beneath.
+        tl.to("#counter-caption", { opacity: 1, duration: 0.5, ease: "power2.out" }, 3.0);
+
+        // Scene 4 (3.6-5.0s): crossfade into the real result screenshot.
+        tl.to("#counter-wrap", { opacity: 0, duration: 0.6, ease: "power2.inOut" }, 3.6);
+        tl.to("#counter-caption", { opacity: 0, duration: 0.6, ease: "power2.inOut" }, 3.6);
+        tl.to("#advertised", { opacity: 0, duration: 0.1 }, 3.6);
+        tl.to("#shot-layer", { opacity: 1, duration: 0.6, ease: "power2.inOut" }, 3.6);
+
+        // Scene 5 (5.0-6.0s): HIGH RISK badge emphasis pulse + red glow bloom.
+        tl.to(
+          "#badge-glow",
+          {
+            boxShadow: "0 0 40px 14px rgba(189,91,71,0.45)",
+            duration: 0.4,
+            ease: "power2.out",
+            yoyo: true,
+            repeat: 1,
+          },
+          5.0,
+        );
+
+        // Scene 6 (6.0-7.4s): gold frame draws around the bait-and-switch panel.
+        tl.fromTo(
+          "#panel-frame",
+          { opacity: 0, scale: 0.96 },
+          { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" },
+          6.0,
+        );
+
+        // Scene 7 (7.4-8.5s): held read, a single slow idle breathe on the panel glow.
+        tl.to("#panel-frame", { opacity: 0.75, duration: 0.55, ease: "sine.inOut", yoyo: true, repeat: 1 }, 7.6);
+
+        window.__timelines["03-reveal"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

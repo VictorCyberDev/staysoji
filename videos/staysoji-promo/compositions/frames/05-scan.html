@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Geist";
+          src: url("assets/fonts/geist-sans.woff2") format("woff2");
+          font-weight: 100 900;
+          font-display: block;
+        }
+        @font-face {
+          font-family: "Geist Mono";
+          src: url("assets/fonts/geist-mono.woff2") format("woff2");
+          font-weight: 100 900;
+          font-display: block;
+        }
+        #root {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          background: #0a1618;
+          font-family: "Geist", system-ui, sans-serif;
+        }
+        .eyebrow {
+          position: absolute;
+          top: 8%;
+          left: 0;
+          right: 0;
+          text-align: center;
+          font-family: "Geist Mono", monospace;
+          font-size: 28px;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: #dab868;
+          opacity: 0;
+        }
+        .stage-wrap {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .stage {
+          position: relative;
+          width: 66%;
+          aspect-ratio: 860 / 1864;
+          opacity: 0;
+        }
+        .stage img {
+          width: 100%;
+          display: block;
+          border-radius: 20px;
+          box-shadow: 0 24px 60px -30px rgba(20, 30, 30, 0.4);
+        }
+        .sweep {
+          position: absolute;
+          left: 6.5%;
+          width: 0%;
+          border-radius: 6px;
+          background: rgba(201, 162, 75, 0.28);
+        }
+        .sweep-1 {
+          top: 54%;
+          height: 12.5%;
+        }
+        .sweep-2 {
+          top: 70%;
+          height: 11%;
+        }
+      </style>
+
+      <div id="root" data-composition-id="05-scan" data-width="1080" data-height="1920" data-duration="5.5">
+        <div class="eyebrow" id="eyebrow" data-layout-allow-overlap>Reads the fine print, too</div>
+        <div class="stage-wrap">
+          <div class="stage" id="stage">
+            <img src="assets/scan-result.png" alt="" />
+            <div class="sweep sweep-1" id="sweep1"></div>
+            <div class="sweep sweep-2" id="sweep2"></div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        const tl = gsap.timeline({ paused: true });
+
+        // Scene 1 (0.0-0.3s): eyebrow line.
+        tl.to("#eyebrow", { opacity: 1, duration: 0.25, ease: "power2.out" }, 0.05);
+
+        // Scene 2 (0.3-1.2s): the real result slides up + crossfades in.
+        tl.fromTo("#stage", { y: 80, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }, 0.3);
+
+        // Scene 3 (1.2-2.7s): sweep under the late-fee clause card.
+        tl.to("#sweep1", { width: "87%", duration: 1.0, ease: "power1.inOut" }, 1.3);
+        tl.to("#sweep1", { opacity: 0, duration: 0.4 }, 2.4);
+
+        // Scene 4 (2.7-4.2s): sweep under the rollover clause card.
+        tl.to("#sweep2", { width: "87%", duration: 1.0, ease: "power1.inOut" }, 2.8);
+        tl.to("#sweep2", { opacity: 0, duration: 0.4 }, 3.9);
+
+        // Scene 5 (4.2-5.0s): held read on both flagged cards.
+
+        window.__timelines["05-scan"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
