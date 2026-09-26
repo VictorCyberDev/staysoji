@@ -11,11 +11,16 @@ export async function readJsonBlob<T>(pathname: string): Promise<T | null> {
   return JSON.parse(text) as T;
 }
 
-export async function writeJsonBlob(pathname: string, data: unknown): Promise<void> {
+export async function writeJsonBlob(
+  pathname: string,
+  data: unknown,
+  options?: { allowOverwrite?: boolean },
+): Promise<void> {
   await put(pathname, JSON.stringify(data), {
     access: "private",
     addRandomSuffix: false,
     contentType: "application/json",
+    allowOverwrite: options?.allowOverwrite ?? false,
     token: blobToken(),
   });
 }

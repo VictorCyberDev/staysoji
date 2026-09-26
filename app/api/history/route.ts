@@ -20,6 +20,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid history entry." }, { status: 400 });
   }
 
-  await appendHistoryEntry(session.email, { type, summary, tone });
+  try {
+    await appendHistoryEntry(session.email, { type, summary, tone });
+  } catch {
+    return NextResponse.json({ error: "Could not save this check." }, { status: 500 });
+  }
   return NextResponse.json({ saved: true });
 }

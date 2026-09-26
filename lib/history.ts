@@ -32,5 +32,5 @@ export async function appendHistoryEntry(
     { ...entry, id: randomUUID(), createdAt: new Date().toISOString() },
     ...existing,
   ].slice(0, MAX_ENTRIES);
-  await writeJsonBlob(historyKey(email), next);
+  await writeJsonBlob(historyKey(email), next, { allowOverwrite: true });
 }
