@@ -9,7 +9,7 @@ language: en
 audience: "Nigerian mobile borrowers considering a quick loan app"
 length: 35s
 angle: catch-the-trap
-narration: no
+narration: yes
 ---
 
 ## Intent
@@ -22,10 +22,14 @@ quick hits on the other two tools — the FCCPC blacklist/delisting lookup, and 
 terms-and-conditions scanner catching a late-fee/rollover/contact-harvesting clause
 — then a close on the brand mark and a "Stay alert before you borrow" CTA to the
 live site. Tone: alert, a little indignant on the user's behalf, not preachy —
-closer to a consumer-protection PSA than a corporate SaaS ad. No voiceover (no
-HeyGen sign-in / local voice engine available in this environment); the video
-carries entirely on kinetic typography, on-screen numbers, and the app's own real
-UI, which fits vertical feed viewing (most viewers watch muted) without loss.
+closer to a consumer-protection PSA than a corporate SaaS ad. v2: a restrained,
+Apple-keynote-style voiceover was added (Kokoro TTS, run locally — no HeyGen
+sign-in available in this sandbox) plus a synthesized sound design bed (ambient
+pad, whoosh transitions, a tension riser under the count-up, a landing accent, a
+closing chime). See `SCRIPT.md` for the full line-by-line timing and the audio
+pipeline. Narration is sparse and never duplicates what the on-screen numbers
+already say outright — it's there to add authority and cadence, not carry
+information the visual can't. The video still reads correctly muted.
 
 ## Assets
 
@@ -43,9 +47,9 @@ UI, which fits vertical feed viewing (most viewers watch muted) without loss.
 
 ## Notes
 
-- Sound-off first: every beat's meaning must land from on-screen text/numbers alone;
-  add a music bed only if a suitable one is available from the catalog without a
-  paid/sign-in step — otherwise ship silent rather than block on it.
+- v2 adds sound: real voiceover (Kokoro, local) + a synthesized SFX/ambient bed
+  (see `SCRIPT.md`). Every beat's meaning still lands from on-screen text/numbers
+  alone — the video is designed to work muted first, narrated second.
 - Real screenshots/screens over invented mockups wherever the site can be captured.
 - No stock-photo or generic fintech-ad aesthetics; use the app's own teal/olive/gold
   palette and its Iris Ring motif if it captures well.

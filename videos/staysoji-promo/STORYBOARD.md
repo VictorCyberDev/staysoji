@@ -5,7 +5,7 @@ message: "That '10% fee' is really a 180%+ APR — StaySoji catches it before yo
 arc: Hook -> Setup -> Reveal (hero) -> Proof x2 -> Brand close
 audience: Nigerian mobile borrowers considering a quick loan app
 mode: autonomous
-music: none
+music: synthesized-sfx-bed
 ---
 
 ## Video direction
@@ -36,10 +36,16 @@ music: none
   "AI" gradient, no bokeh, no drop shadows beyond the app's own soft ambient shadow, no
   slideshow (front-load-then-freeze) and no screensaver (independently drifting
   elements) — every moving piece answers to the reading rhythm above.
-- **Sound**: silent by design (`music: none`, no `SCRIPT.md`) — no HeyGen sign-in and no
-  local voice/music engine available in this environment; also the more honest choice
-  for a vertical feed video, since most Reels/TikTok viewers watch muted and every beat
-  here is built to land from on-screen type and the app's own real numbers alone.
+- **Sound** (v2): v1 shipped silent (no HeyGen sign-in, no local voice/music deps
+  installed at the time). v2 adds a restrained voiceover (Kokoro TTS, `am_michael`,
+  run locally) plus a synthesized SFX/ambient bed — see `SCRIPT.md` for the full
+  line-by-line timing and pipeline. MusicGen (the local music fallback) needed
+  torch/transformers, too heavy for this sandbox and arguably the wrong instrument
+  anyway: an Apple-keynote soundscape is precise synthesized tones and whooshes,
+  not a generated song bed. The reading-rhythm pacing above is unchanged — every
+  beat still lands from on-screen type and the app's own real numbers alone, so the
+  video works correctly muted; the voiceover adds authority and cadence on top,
+  never new information the visual doesn't already carry.
 
 ## Frame 1 — Hook
 
