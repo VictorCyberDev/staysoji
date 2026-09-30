@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Geist";
+          src: url("assets/fonts/geist-sans.woff2") format("woff2");
+          font-weight: 100 900;
+          font-display: block;
+        }
+        @font-face {
+          font-family: "Geist Mono";
+          src: url("assets/fonts/geist-mono.woff2") format("woff2");
+          font-weight: 100 900;
+          font-display: block;
+        }
+        #root {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          background: #0a1618;
+          font-family: "Geist", system-ui, sans-serif;
+        }
+        .eyebrow {
+          position: absolute;
+          top: 5%;
+          left: 0;
+          right: 0;
+          text-align: center;
+          font-family: "Geist Mono", monospace;
+          font-size: 26px;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: #dab868;
+          opacity: 0;
+        }
+        .stage-wrap {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .stage {
+          position: relative;
+          width: 68%;
+          aspect-ratio: 860 / 1864;
+        }
+        .layer {
+          position: absolute;
+          inset: 0;
+          opacity: 0;
+        }
+        .layer img {
+          width: 100%;
+          height: 100%;
+          display: block;
+          border-radius: 20px;
+          box-shadow: 0 24px 60px -30px rgba(20, 30, 30, 0.4);
+        }
+        .box {
+          position: absolute;
+          border: 3px solid #c9a24b;
+          border-radius: 12px;
+          opacity: 0;
+          transform: scale(0.96);
+        }
+        .box-paste {
+          left: 3%;
+          width: 94%;
+          top: 37.0%;
+          height: 24.5%;
+        }
+        .box-badge {
+          left: 10%;
+          width: 26%;
+          top: 33.6%;
+          height: 3.2%;
+          border-radius: 999px;
+        }
+        .box-latefee {
+          left: 3%;
+          width: 94%;
+          top: 52.6%;
+          height: 14.6%;
+        }
+        .box-rollover {
+          left: 3%;
+          width: 94%;
+          top: 67.7%;
+          height: 13.5%;
+        }
+      </style>
+
+      <div id="root" data-composition-id="05-scan" data-width="1080" data-height="1920" data-duration="9">
+        <div class="eyebrow" id="eyebrow">3 &middot; Terms Scanner</div>
+        <div class="stage-wrap">
+          <div class="stage" id="stage">
+            <div class="layer" id="layer-input">
+              <img src="assets/scan-pasted.png" alt="" />
+              <div class="box box-paste" id="box-paste"></div>
+            </div>
+            <div class="layer" id="layer-result">
+              <img src="assets/scan-result.png" alt="" />
+              <div class="box box-badge" id="box-badge"></div>
+              <div class="box box-latefee" id="box-latefee"></div>
+              <div class="box box-rollover" id="box-rollover"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        const tl = gsap.timeline({ paused: true });
+
+        // Scene 1 (0.0-0.3s): eyebrow.
+        tl.to("#eyebrow", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.1);
+
+        // Scene 2 (0.3-1.1s): input state - the real terms text, pasted in.
+        tl.fromTo("#stage", { y: 90, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }, 0.3);
+        tl.to("#layer-input", { opacity: 1, duration: 0.01 }, 0.3);
+
+        // Scene 3 (1.2-2.4s): highlight the pasted text box.
+        tl.to("#box-paste", { opacity: 1, scale: 1, duration: 0.35, ease: "power2.out" }, 1.2);
+        tl.to("#box-paste", { opacity: 0, duration: 0.4, ease: "power2.inOut" }, 2.6);
+
+        // Scene 4 (2.8-3.4s): crossfade to the scan result.
+        tl.to("#layer-input", { opacity: 0, duration: 0.6, ease: "power2.inOut" }, 2.8);
+        tl.to("#layer-result", { opacity: 1, duration: 0.6, ease: "power2.inOut" }, 2.8);
+
+        // Scene 5 (3.6-4.2s): HIGH RISK badge.
+        tl.fromTo("#box-badge", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.35, ease: "power2.out" }, 3.6);
+
+        // Scene 6 (4.3-5.2s): the late-fee clause card.
+        tl.fromTo("#box-latefee", { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" }, 4.3);
+        tl.to("#box-latefee", { opacity: 0.35, duration: 0.3 }, 5.4);
+
+        // Scene 7 (5.6-6.5s): the rollover clause card.
+        tl.fromTo("#box-rollover", { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" }, 5.6);
+
+        // Scene 8 (6.5-8.5s): held read, both cards pulse once together.
+        tl.to(["#box-latefee", "#box-rollover"], { borderColor: "#dab868", duration: 0.18, yoyo: true, repeat: 1 }, 7.0);
+
+        window.__timelines["05-scan"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

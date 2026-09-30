@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Geist";
+          src: url("assets/fonts/geist-sans.woff2") format("woff2");
+          font-weight: 100 900;
+          font-display: block;
+        }
+        @font-face {
+          font-family: "Geist Mono";
+          src: url("assets/fonts/geist-mono.woff2") format("woff2");
+          font-weight: 100 900;
+          font-display: block;
+        }
+        #root {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          background: #0a1618;
+          font-family: "Geist", system-ui, sans-serif;
+        }
+        .eyebrow {
+          position: absolute;
+          top: 30%;
+          left: 0;
+          right: 0;
+          text-align: center;
+          font-family: "Geist Mono", monospace;
+          font-size: 28px;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #dab868;
+          opacity: 0;
+        }
+        .type-layer {
+          position: absolute;
+          top: 36%;
+          left: 0;
+          right: 0;
+          display: flex;
+          justify-content: center;
+          padding: 0 9%;
+        }
+        .type-text {
+          font-size: 82px;
+          font-weight: 500;
+          line-height: 1.14;
+          letter-spacing: -0.01em;
+          color: #f3efe6;
+          white-space: pre-line;
+          text-align: center;
+        }
+        .cursor {
+          display: inline-block;
+          width: 6px;
+          height: 68px;
+          background: #c9a24b;
+          margin-left: 4px;
+          vertical-align: -10px;
+        }
+        .sub {
+          position: absolute;
+          top: 60%;
+          left: 0;
+          right: 0;
+          text-align: center;
+          padding: 0 12%;
+          font-size: 32px;
+          line-height: 1.4;
+          color: rgba(243, 239, 230, 0.72);
+          opacity: 0;
+        }
+      </style>
+
+      <div id="root" data-composition-id="01-hook" data-width="1080" data-height="1920" data-duration="4.5">
+        <div class="eyebrow" id="eyebrow">Staysoji &middot; Walkthrough</div>
+        <div class="type-layer" id="type-layer">
+          <div class="type-text"><span id="typed"></span><span class="cursor" id="cursor"></span></div>
+        </div>
+        <div class="sub" id="sub">A free tool that catches predatory loan terms<br />before you borrow.</div>
+      </div>
+
+      <script src="assets/vendor/TextPlugin.min.js"></script>
+      <script>
+        gsap.registerPlugin(TextPlugin);
+
+        const tl = gsap.timeline({ paused: true });
+        const FULL_TEXT = "Three real checks.";
+
+        // Scene 1 (0.0-0.3s): eyebrow label fades in.
+        tl.to("#eyebrow", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.1);
+
+        // Scene 2 (0.3-0.5s): cursor idle blink.
+        gsap.set("#cursor", { opacity: 1 });
+        tl.to("#cursor", { opacity: 0, duration: 0.2, repeat: 1, yoyo: true, ease: "steps(1)" }, 0.3);
+
+        // Scene 3 (0.5-1.6s): type the headline.
+        tl.to("#typed", { text: { value: FULL_TEXT }, duration: 1.1, ease: "none" }, 0.5);
+        tl.to("#cursor", { opacity: 0, duration: 0.15, repeat: 3, yoyo: true, ease: "steps(1)" }, 1.6);
+
+        // Scene 4 (1.7-2.3s): subhead fades up beneath.
+        tl.fromTo("#sub", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 1.7);
+
+        // Scene 5 (2.3-4.0s): held read.
+
+        window.__timelines["01-hook"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

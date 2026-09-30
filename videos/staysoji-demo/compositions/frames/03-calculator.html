@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Geist";
+          src: url("assets/fonts/geist-sans.woff2") format("woff2");
+          font-weight: 100 900;
+          font-display: block;
+        }
+        @font-face {
+          font-family: "Geist Mono";
+          src: url("assets/fonts/geist-mono.woff2") format("woff2");
+          font-weight: 100 900;
+          font-display: block;
+        }
+        #root {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          background: #f3efe6;
+          font-family: "Geist", system-ui, sans-serif;
+        }
+        .eyebrow {
+          position: absolute;
+          top: 5%;
+          left: 0;
+          right: 0;
+          text-align: center;
+          font-family: "Geist Mono", monospace;
+          font-size: 26px;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: #8a6a2a;
+          opacity: 0;
+        }
+        .stage-wrap {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .stage {
+          position: relative;
+          width: 68%;
+          aspect-ratio: 860 / 1864;
+        }
+        .layer {
+          position: absolute;
+          inset: 0;
+          opacity: 0;
+        }
+        .layer img {
+          width: 100%;
+          height: 100%;
+          display: block;
+          border-radius: 20px;
+          box-shadow: 0 24px 60px -30px rgba(20, 30, 30, 0.35);
+        }
+        .box {
+          position: absolute;
+          border: 3px solid #c9a24b;
+          border-radius: 12px;
+          opacity: 0;
+          transform: scale(0.96);
+        }
+        .callout {
+          position: absolute;
+          left: 3%;
+          right: 3%;
+          font-family: "Geist Mono", monospace;
+          font-weight: 500;
+          font-size: 27px;
+          letter-spacing: 0.01em;
+          color: #0a0c0b;
+          text-align: center;
+          opacity: 0;
+        }
+        /* input-state boxes (calc-filled.png) */
+        .box-principal {
+          left: 3%;
+          width: 94%;
+          top: 33.8%;
+          height: 4.8%;
+        }
+        .box-terms {
+          left: 3%;
+          width: 94%;
+          top: 44.3%;
+          height: 4.8%;
+        }
+        .box-actual {
+          left: 3%;
+          width: 94%;
+          top: 55.5%;
+          height: 6.2%;
+        }
+        .callout-input {
+          top: 27%;
+        }
+        /* result-state boxes (calc-result.png) */
+        .box-badge {
+          left: 10%;
+          width: 26%;
+          top: 33.6%;
+          height: 3.2%;
+          border-radius: 999px;
+        }
+        .box-apr {
+          left: 10%;
+          width: 60%;
+          top: 40.5%;
+          height: 3.2%;
+        }
+        .box-panel {
+          left: 10%;
+          width: 80%;
+          top: 68.2%;
+          height: 15.8%;
+        }
+      </style>
+
+      <div id="root" data-composition-id="03-calculator" data-width="1080" data-height="1920" data-duration="12">
+        <div class="eyebrow" id="eyebrow">1 &middot; True Cost Calculator</div>
+        <div class="stage-wrap">
+          <div class="stage" id="stage">
+            <div class="layer" id="layer-input">
+              <img src="assets/calc-filled.png" alt="" />
+              <div class="box box-principal" id="box-principal"></div>
+              <div class="box box-terms" id="box-terms"></div>
+              <div class="box box-actual" id="box-actual"></div>
+            </div>
+            <div class="callout callout-input" id="callout-input">amount &middot; fee &middot; duration &middot; real deadline</div>
+            <div class="layer" id="layer-result">
+              <img src="assets/calc-result.png" alt="" />
+              <div class="box box-badge" id="box-badge"></div>
+              <div class="box box-apr" id="box-apr"></div>
+              <div class="box box-panel" id="box-panel"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        const tl = gsap.timeline({ paused: true });
+
+        // Scene 1 (0.0-0.3s): eyebrow.
+        tl.to("#eyebrow", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.1);
+
+        // Scene 2 (0.3-1.1s): input state (the filled form) slides in.
+        tl.fromTo("#stage", { y: 90, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }, 0.3);
+        tl.to("#layer-input", { opacity: 1, duration: 0.01 }, 0.3);
+
+        // Scene 3 (1.2-2.5s): highlight the three input groups in sequence.
+        tl.to("#box-principal", { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, 1.2);
+        tl.to("#callout-input", { opacity: 1, duration: 0.3, ease: "power2.out" }, 1.2);
+        tl.to("#box-principal", { opacity: 0.35, duration: 0.25 }, 1.75);
+        tl.to("#box-terms", { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, 1.75);
+        tl.to("#box-terms", { opacity: 0.35, duration: 0.25 }, 2.15);
+        tl.to("#box-actual", { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, 2.15);
+        tl.to(["#box-principal", "#box-terms", "#box-actual", "#callout-input"], { opacity: 0, duration: 0.4, ease: "power2.inOut" }, 2.9);
+
+        // Scene 4 (3.1-3.7s): crossfade input -> result (the computed answer).
+        tl.to("#layer-input", { opacity: 0, duration: 0.6, ease: "power2.inOut" }, 3.1);
+        tl.to("#layer-result", { opacity: 1, duration: 0.6, ease: "power2.inOut" }, 3.1);
+
+        // Scene 5 (3.9-4.5s): HIGH RISK badge.
+        tl.fromTo("#box-badge", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.35, ease: "power2.out" }, 3.9);
+
+        // Scene 6 (4.6-5.6s): the True APR figure highlights.
+        tl.fromTo("#box-apr", { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" }, 4.6);
+
+        // Scene 7 (5.9-7.4s): the bait-and-switch panel frames.
+        tl.fromTo("#box-panel", { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" }, 5.9);
+
+        // Scene 8 (7.4-11.5s): held read, a slow idle breathe on the panel.
+        tl.to("#box-panel", { opacity: 0.7, duration: 0.6, ease: "sine.inOut", yoyo: true, repeat: 3 }, 7.6);
+
+        window.__timelines["03-calculator"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
